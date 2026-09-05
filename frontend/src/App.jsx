@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
-import { JDInputScreen, InterviewSummary, InterviewScreen } from './components/InterviewScreens';
+import { JDInputPortal, InterviewSummary } from './components/JDPortal';
+import { LiveInterviewScreen } from './components/InterviewScreens';
 import { FinalReportScreen } from './components/ReportScreen';
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
 
   const handleJDSubmit = (data) => {
     setInterviewData(data);
-    setCurrentScreen('interview-ready');
+    setCurrentScreen('interview-summary');
   };
 
   const handleStartInterview = () => {
@@ -30,98 +31,88 @@ function App() {
 
   return (
     <>
-      {/* Interview Screen - Full Screen */}
+      {/* Full-screen Interview */}
       {currentScreen === 'interview' && interviewData && (
-        <InterviewScreen
+        <LiveInterviewScreen
           interviewData={interviewData}
           onComplete={handleInterviewComplete}
         />
       )}
 
-      {/* Other Screens with Normal Layout */}
-      {currentScreen !== 'interview' && (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-          <nav className="bg-white shadow-md p-4 sticky top-0 z-50">
-            <div className="max-w-6xl mx-auto flex justify-between items-center">
-              <div>
-                <h1 className="text-3xl font-bold text-indigo-600">Interview Cracker</h1>
-                <p className="text-gray-600 text-sm">AI-Powered Mock Interview Platform</p>
-              </div>
-              {currentScreen !== 'home' && (
-                <button
-                  onClick={handleReset}
-                  className="text-gray-600 hover:text-gray-800 text-sm font-semibold bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition"
-                >
-                  ← Back to Home
-                </button>
-              )}
-            </div>
+      {/* Other Screens */}
+      {currentScreen === 'home' && (
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+          <nav className="border-b border-slate-700 px-6 py-6">
+            <h1 className="text-4xl font-bold">Interview Cracker</h1>
+            <p className="text-slate-400 text-sm mt-1">AI-Powered Mock Interview Platform</p>
           </nav>
 
-          <main className="max-w-6xl mx-auto p-6">
-            {currentScreen === 'home' && (
-              <div className="bg-white rounded-lg shadow-lg p-12 text-center">
-                <h2 className="text-4xl font-bold text-gray-800 mb-4">
-                  Welcome to Interview Cracker
+          <div className="max-w-6xl mx-auto px-6 py-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              {/* Left Side - Hero */}
+              <div>
+                <h2 className="text-5xl font-bold mb-6 leading-tight">
+                  Practice Your <span className="text-indigo-400">Next Interview</span>
                 </h2>
-                <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
-                  Paste a job description and practice with an AI-powered video interview
-                  tailored to the role. Get real-time feedback on your responses and build
-                  confidence for your actual interviews.
+                <p className="text-xl text-slate-300 mb-8">
+                  Get real-time feedback on your technical knowledge and communication skills with our AI interview assistant.
                 </p>
                 <button
                   onClick={() => setCurrentScreen('jd-input')}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-10 rounded-lg text-lg transition"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition"
                 >
-                  Start Interview
+                  Get Started →
                 </button>
               </div>
-            )}
 
-            {currentScreen === 'jd-input' && (
-              <JDInputScreen
-                onJDSubmit={handleJDSubmit}
-                onBack={() => setCurrentScreen('home')}
-              />
-            )}
-
-            {currentScreen === 'interview-ready' && interviewData && (
+              {/* Right Side - Features */}
               <div className="space-y-6">
-                <InterviewSummary data={interviewData} />
-                <div className="bg-white rounded-lg shadow-lg p-8 text-center border-2 border-indigo-200">
-                  <p className="text-gray-600 mb-6 text-lg">
-                    You're about to enter a live video interview with our AI interviewer. 
-                    Make sure your microphone and speaker are working properly.
-                  </p>
-                  <div className="flex gap-4 justify-center mb-6">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-sm text-gray-700">Microphone ready</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-sm text-gray-700">Speaker ready</span>
-                    </div>
+                {[
+                  { icon: '🎯', title: 'Role-Specific', desc: 'AI generates questions from your job description' },
+                  { icon: '🎤', title: 'Voice Input', desc: 'Speak naturally just like a real interview' },
+                  { icon: '📊', title: 'Instant Feedback', desc: 'Get scores and insights after each answer' },
+                  { icon: '📈', title: 'Detailed Report', desc: 'Complete breakdown of your performance' },
+                ].map((feature, idx) => (
+                  <div key={idx} className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-indigo-500 transition">
+                    <p className="text-3xl mb-2">{feature.icon}</p>
+                    <p className="font-bold text-white mb-2">{feature.title}</p>
+                    <p className="text-slate-400 text-sm">{feature.desc}</p>
                   </div>
-                  <button
-                    onClick={handleStartInterview}
-                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-12 rounded-lg text-lg transition inline-block"
-                  >
-                    🎬 Start Live Interview
-                  </button>
-                </div>
+                ))}
               </div>
-            )}
-
-            {currentScreen === 'final-report' && interviewData && allAnswers && (
-              <FinalReportScreen
-                allAnswers={allAnswers}
-                interviewData={interviewData}
-                onReset={handleReset}
-              />
-            )}
-          </main>
+            </div>
+          </div>
         </div>
+      )}
+
+      {currentScreen === 'jd-input' && (
+        <JDInputPortal
+          onJDSubmit={handleJDSubmit}
+          onBack={() => setCurrentScreen('home')}
+        />
+      )}
+
+      {currentScreen === 'interview-summary' && interviewData && (
+        <div className="relative">
+          <button
+            onClick={handleReset}
+            className="absolute top-6 left-6 z-10 text-slate-400 hover:text-white transition flex items-center gap-2"
+          >
+            ← Back
+          </button>
+          <InterviewSummary
+            data={interviewData}
+            onStart={handleStartInterview}
+          />
+        </div>
+      )}
+
+      {currentScreen === 'final-report' && interviewData && allAnswers && (
+        <FinalReportScreen
+          allAnswers={allAnswers}
+          interviewData={interviewData}
+          onReset={handleReset}
+        />
       )}
     </>
   );
