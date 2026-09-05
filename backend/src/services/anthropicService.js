@@ -1,8 +1,7 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
 /**
  * Analyzes a job description and generates interview questions
@@ -34,23 +33,13 @@ Job Description:
 ${jobDescription}`;
 
   try {
-    const message = await client.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 1024,
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-    });
-
-    const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
     
-    // Extract JSON from response (Claude may wrap it in markdown code blocks)
+    // Extract JSON from response (Gemini may wrap it in markdown code blocks)
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('Failed to parse Claude response as JSON');
+      throw new Error('Failed to parse Gemini response as JSON');
     }
 
     const parsed = JSON.parse(jsonMatch[0]);
@@ -69,7 +58,7 @@ ${jobDescription}`;
     return parsed;
   } catch (error) {
     if (error instanceof SyntaxError) {
-      throw new Error(`Failed to parse Claude response: ${error.message}`);
+      throw new Error(`Failed to parse Gemini response: ${error.message}`);
     }
     throw error;
   }
@@ -109,23 +98,13 @@ Return your response as a valid JSON object with this exact structure:
 }`;
 
   try {
-    const message = await client.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 512,
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-    });
-
-    const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
     
     // Extract JSON from response
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('Failed to parse Claude response as JSON');
+      throw new Error('Failed to parse Gemini response as JSON');
     }
 
     const parsed = JSON.parse(jsonMatch[0]);
@@ -138,7 +117,7 @@ Return your response as a valid JSON object with this exact structure:
     return parsed;
   } catch (error) {
     if (error instanceof SyntaxError) {
-      throw new Error(`Failed to parse Claude response: ${error.message}`);
+      throw new Error(`Failed to parse Gemini response: ${error.message}`);
     }
     throw error;
   }

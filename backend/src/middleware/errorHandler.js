@@ -5,25 +5,25 @@
 export function errorHandler(err, req, res, next) {
   console.error('Error:', err.message);
 
-  // Anthropic API errors
-  if (err.status === 401) {
+  // Gemini API errors
+  if (err.status === 401 || err.message?.includes('API key')) {
     return res.status(401).json({
       error: 'Unauthorized',
-      message: 'Invalid or missing API key. Check ANTHROPIC_API_KEY in .env',
+      message: 'Invalid or missing API key. Check GEMINI_API_KEY in .env',
     });
   }
 
   if (err.status === 429) {
     return res.status(429).json({
       error: 'Rate Limited',
-      message: 'Too many requests to Claude API. Please try again later.',
+      message: 'Too many requests to Gemini API. Please try again later.',
     });
   }
 
   if (err.status >= 500) {
     return res.status(503).json({
       error: 'Service Unavailable',
-      message: 'Claude API is temporarily unavailable. Please try again later.',
+      message: 'Gemini API is temporarily unavailable. Please try again later.',
     });
   }
 

@@ -5,7 +5,7 @@ Interview Cracker is an AI-powered mock interview platform. Users paste a job de
 ## Project Structure
 
 - **frontend/**: React + Vite application with Tailwind CSS
-- **backend/**: Node.js + Express server with Anthropic Claude API integration
+- **backend/**: Node.js + Express server with Google Gemini API integration
 
 ## Tech Stack
 
@@ -17,19 +17,19 @@ Interview Cracker is an AI-powered mock interview platform. Users paste a job de
 
 **Backend:**
 - Express.js
-- Anthropic SDK
+- Google Generative AI (Gemini)
 - dotenv for environment management
 - CORS enabled for cross-origin requests
 
 ## Environment Setup
 
-1. Create a `.env` file in the root directory
-2. Copy the contents from `.env.example`
-3. Add your Anthropic API key (get it from https://console.anthropic.com/)
+1. Create a `.env` file in `backend/` directory
+2. Copy the contents from `backend/.env.example`
+3. Add your Gemini API key (get it from https://makersuite.google.com/app/apikey)
 
 ```bash
-# .env
-ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxx
+# backend/.env
+GEMINI_API_KEY=your_api_key_here
 BACKEND_PORT=5000
 NODE_ENV=development
 ```

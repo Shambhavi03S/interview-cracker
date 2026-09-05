@@ -10,8 +10,8 @@ const app = express();
 const PORT = process.env.BACKEND_PORT || 5000;
 
 // Validate required environment variables
-if (!process.env.ANTHROPIC_API_KEY) {
-  console.error('ERROR: ANTHROPIC_API_KEY is not set in .env file');
+if (!process.env.GEMINI_API_KEY) {
+  console.error('ERROR: GEMINI_API_KEY is not set in .env file');
   process.exit(1);
 }
 
