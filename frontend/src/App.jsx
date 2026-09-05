@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import './App.css';
-import { JDInputScreen, InterviewSummary } from './components/InterviewScreens';
+import { JDInputScreen, InterviewSummary, InterviewScreen } from './components/InterviewScreens';
+import { FinalReportScreen } from './components/ReportScreen';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
   const [interviewData, setInterviewData] = useState(null);
+  const [allAnswers, setAllAnswers] = useState(null);
 
   const handleJDSubmit = (data) => {
     setInterviewData(data);
@@ -15,14 +17,20 @@ function App() {
     setCurrentScreen('interview');
   };
 
+  const handleInterviewComplete = (answers) => {
+    setAllAnswers(answers);
+    setCurrentScreen('final-report');
+  };
+
   const handleReset = () => {
     setInterviewData(null);
+    setAllAnswers(null);
     setCurrentScreen('home');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <nav className="bg-white shadow-md p-4">
+      <nav className="bg-white shadow-md p-4 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-indigo-600">Interview Cracker</h1>
@@ -31,7 +39,7 @@ function App() {
           {currentScreen !== 'home' && (
             <button
               onClick={handleReset}
-              className="text-gray-600 hover:text-gray-800 text-sm font-semibold"
+              className="text-gray-600 hover:text-gray-800 text-sm font-semibold bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition"
             >
               ← Back to Home
             </button>
@@ -83,16 +91,19 @@ function App() {
           </div>
         )}
 
-        {currentScreen === 'interview' && (
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            <p className="text-gray-600 mb-4">Interview screen coming soon...</p>
-            <button
-              onClick={() => setCurrentScreen('interview-ready')}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-lg"
-            >
-              Back
-            </button>
-          </div>
+        {currentScreen === 'interview' && interviewData && (
+          <InterviewScreen
+            interviewData={interviewData}
+            onComplete={handleInterviewComplete}
+          />
+        )}
+
+        {currentScreen === 'final-report' && interviewData && allAnswers && (
+          <FinalReportScreen
+            allAnswers={allAnswers}
+            interviewData={interviewData}
+            onReset={handleReset}
+          />
         )}
       </main>
     </div>
