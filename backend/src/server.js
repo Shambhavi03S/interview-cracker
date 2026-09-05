@@ -8,11 +8,11 @@ import { errorHandler, validateJSON } from './middleware/errorHandler.js';
 import interviewRoutes from './routes/interviewRoutes.js';
 
 const app = express();
-const PORT = process.env.BACKEND_PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 // Validate required environment variables
 if (!process.env.GROQ_API_KEY) {
-  console.error('ERROR: GROQ_API_KEY is not set in .env file');
+  console.error('ERROR: GROQ_API_KEY is not set');
   process.exit(1);
 }
 
@@ -20,6 +20,13 @@ if (!process.env.GROQ_API_KEY) {
 app.use(cors());
 app.use(express.json());
 app.use(validateJSON);
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Interview Cracker Backend is running successfully 🚀'
+  });
+});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -41,15 +48,9 @@ app.use((req, res) => {
   });
 });
 
-// Error handling middleware (must be last)
+// Error handling middleware
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`
-╔════════════════════════════════════════╗
-║   Interview Cracker Backend            ║
-║   Listening on http://localhost:${PORT}    ║
-║   Environment: ${process.env.NODE_ENV || 'development'}            ║
-╚════════════════════════════════════════╝
-  `);
+  console.log(`Interview Cracker Backend listening on port ${PORT}`);
 });
