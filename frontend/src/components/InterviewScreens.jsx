@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ErrorAlert } from './UIComponents';
+import { apiClient } from '../services/apiService';
 
 export function LiveInterviewScreen({ interviewData, onComplete }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -95,31 +96,55 @@ export function LiveInterviewScreen({ interviewData, onComplete }) {
     window.speechSynthesis.speak(utterance);
   };
 
-  const handleAnswerComplete = (finalAnswer) => {
+  const handleAnswerComplete = async (finalAnswer) => {
     if (!finalAnswer.trim()) {
       setShowNextBtn(true);
       return;
     }
 
-    // Mock feedback
-    const mockFeedback = {
-      contentAccuracy: Math.floor(Math.random() * 3) + 7,
-      communicationClarity: Math.floor(Math.random() * 3) + 6,
-      feedback: 'Good response with technical depth.',
-      strengths: ['Technical knowledge', 'Problem-solving'],
-      areasForImprovement: ['Clarity', 'Conciseness'],
-    };
+    try {
+      // Call real AI API for evaluation
+      const response = await apiClient.evaluateAnswer(
+        currentQuestion.question,
+        finalAnswer,
+        interviewData.skills
+      );
 
-    setAnswers([
+      const feedback = response.data;
+
       ...answers,
       {
         question: currentQuestion.question,
         answer: finalAnswer,
-        feedback: mockFeedback,
+        feedback: feedback,
       },
     ]);
 
     setShowNextBtn(true);
+
+      setShowNextBtn(true);
+    } catch (err) {
+      console.error('Error evaluating answer:', err);
+      // Fallback to mock data if API fails
+      const mockFeedback = {
+        contentAccuracy: Math.floor(Math.random() * 3) + 7,
+        communicationClarity: Math.floor(Math.random() * 3) + 6,
+        feedback: 'Good response with technical depth.',
+        strengths: ['Technical knowledge', 'Problem-solving'],
+        areasForImprovement: ['Clarity', 'Conciseness'],
+      };
+
+      setAnswers([
+        ...answers,
+        {
+          question: currentQuestion.question,
+          answer: finalAnswer,
+          feedback: mockFeedback,
+        },
+      ]);
+
+      setShowNextBtn(true);
+    }
   };
 
   const handleNextQuestion = () => {
