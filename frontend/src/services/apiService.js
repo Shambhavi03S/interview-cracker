@@ -44,6 +44,27 @@ class APIClient {
     });
   }
 
+  /**
+   * Scores the answer just given (unless it's the opening introduction) and,
+   * unless this was the final question, asks the AI for the next question
+   * based on the job description and the conversation so far.
+   */
+  getNextTurn({ jobDescription, skills, seniority, history, currentQuestion, currentAnswer, isIntroduction, isFinal }) {
+    return this.request('/api/interview/next-turn', {
+      method: 'POST',
+      body: JSON.stringify({
+        jobDescription,
+        skills,
+        seniority,
+        history,
+        currentQuestion,
+        currentAnswer,
+        isIntroduction,
+        isFinal,
+      }),
+    });
+  }
+
   getHealth() {
     return this.request('/api/health');
   }

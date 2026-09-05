@@ -3,6 +3,7 @@ import './App.css';
 import { JDInputPortal, InterviewSummary } from './components/JDPortal';
 import { LiveInterviewScreen } from './components/InterviewScreens';
 import { FinalReportScreen } from './components/ReportScreen';
+import { Button } from './components/UIComponents';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
@@ -39,44 +40,45 @@ function App() {
         />
       )}
 
-      {/* Other Screens */}
+      {/* Home */}
       {currentScreen === 'home' && (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-          <nav className="border-b border-slate-700 px-6 py-6">
-            <h1 className="text-4xl font-bold">Interview Cracker</h1>
-            <p className="text-slate-400 text-sm mt-1">AI-Powered Mock Interview Platform</p>
-          </nav>
+        <div className="min-h-screen bg-paper text-ink">
+          <header className="border-b border-line">
+            <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+              <span className="font-serif text-xl font-semibold tracking-tight">Interview Cracker</span>
+              <span className="text-sm text-ink-faint hidden sm:block">Practice out loud, before it counts</span>
+            </div>
+          </header>
 
-          <div className="max-w-6xl mx-auto px-6 py-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              {/* Left Side - Hero */}
-              <div>
-                <h2 className="text-5xl font-bold mb-6 leading-tight">
-                  Practice Your <span className="text-indigo-400">Next Interview</span>
-                </h2>
-                <p className="text-xl text-slate-300 mb-8">
-                  Get real-time feedback on your technical knowledge and communication skills with our AI interview assistant.
-                </p>
-                <button
-                  onClick={() => setCurrentScreen('jd-input')}
-                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition"
-                >
-                  Get Started →
-                </button>
-              </div>
+          <div className="max-w-6xl mx-auto px-6 py-20">
+            {/* Hero copy */}
+            <div className="max-w-2xl">
+              <h1 className="font-serif text-5xl leading-[1.1] font-semibold mb-6">
+                Rehearse the interview before the interviewer does
+              </h1>
+              <p className="text-lg text-ink-soft mb-8 max-w-prose">
+                Give us the job description and start talking. The interviewer
+                asks one question at a time, live, and shapes every next
+                question around what you just said — no script, no fixed
+                question list.
+              </p>
+              <Button onClick={() => setCurrentScreen('jd-input')}>
+                Start with a job description
+              </Button>
+            </div>
 
-              {/* Right Side - Features */}
-              <div className="space-y-6">
+            {/* How it works — a genuine sequence, numbering earns its place */}
+            <div className="mt-24 border-t border-line pt-16">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 {[
-                  { icon: '🎯', title: 'Role-Specific', desc: 'AI generates questions from your job description' },
-                  { icon: '🎤', title: 'Voice Input', desc: 'Speak naturally just like a real interview' },
-                  { icon: '📊', title: 'Instant Feedback', desc: 'Get scores and insights after each answer' },
-                  { icon: '📈', title: 'Detailed Report', desc: 'Complete breakdown of your performance' },
-                ].map((feature, idx) => (
-                  <div key={idx} className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-indigo-500 transition">
-                    <p className="text-3xl mb-2">{feature.icon}</p>
-                    <p className="font-bold text-white mb-2">{feature.title}</p>
-                    <p className="text-slate-400 text-sm">{feature.desc}</p>
+                  { step: '1', title: 'Share the role', desc: 'Paste or upload the job description you\u2019re preparing for.' },
+                  { step: '2', title: 'Start with an introduction', desc: 'The interview opens with "Tell me about yourself," then each next question is generated live from your answers and the role.' },
+                  { step: '3', title: 'Read your report', desc: 'See scored feedback on content and clarity, question by question.' },
+                ].map((item) => (
+                  <div key={item.step}>
+                    <p className="font-serif text-3xl text-brass-500 mb-3">{item.step}</p>
+                    <p className="font-semibold mb-1">{item.title}</p>
+                    <p className="text-ink-soft text-sm leading-relaxed">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -93,18 +95,11 @@ function App() {
       )}
 
       {currentScreen === 'interview-summary' && interviewData && (
-        <div className="relative">
-          <button
-            onClick={handleReset}
-            className="absolute top-6 left-6 z-10 text-slate-400 hover:text-white transition flex items-center gap-2"
-          >
-            ← Back
-          </button>
-          <InterviewSummary
-            data={interviewData}
-            onStart={handleStartInterview}
-          />
-        </div>
+        <InterviewSummary
+          data={interviewData}
+          onStart={handleStartInterview}
+          onBack={handleReset}
+        />
       )}
 
       {currentScreen === 'final-report' && interviewData && allAnswers && (
